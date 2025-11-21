@@ -10,6 +10,11 @@
 #' 
 #' @inheritParams get_airlines
 #' 
+#' @details 
+#' The \code{year} parameter is accepted for backward compatibility but is 
+#' not used in data retrieval, as the FAA now provides a single consolidated 
+#' aircraft registry database rather than separate yearly databases.
+#' 
 #' @return A data frame with ~3500 rows and 9 variables:
 #' \describe{
 #' \item{tailnum}{Tail number}
@@ -45,11 +50,11 @@
 #'
 #' @export
 get_planes <- function(
-  #year, 
+  year = NULL, 
   dir = NULL, flights_data = NULL) {
 
   # check user inputs
-  check_arguments(#year = year,
+  check_arguments(year = year,
                   dir = dir,
                   context = "planes")
   flights_data <- parse_flights_data_arg(flights_data)
@@ -63,8 +68,10 @@ get_planes <- function(
   }
   
   # grab the planes data for the relevant year
+  # Note: year parameter is accepted for backward compatibility but not used
+  # in URL construction as FAA now provides a single consolidated dataset
   planes <- get_planes_data(
-    #year, 
+    year, 
     dir, flights_data)
   
   # save the data if a directory was supplied
