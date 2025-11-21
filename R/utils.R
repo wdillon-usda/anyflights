@@ -492,8 +492,12 @@ find_file_case_insensitive <- function(dir, filename) {
   base_name <- tools::file_path_sans_ext(filename)
   extension <- tools::file_ext(filename)
   
+  # Escape special regex characters in the filename components
+  base_name_escaped <- gsub("([\\[\\](){}.*+?^$|\\\\])", "\\\\\\1", base_name)
+  extension_escaped <- gsub("([\\[\\](){}.*+?^$|\\\\])", "\\\\\\1", extension)
+  
   # Create a pattern that matches the filename exactly but case-insensitively
-  available_files <- list.files(dir, pattern = paste0("^", base_name, "\\.", extension, "$"), 
+  available_files <- list.files(dir, pattern = paste0("^", base_name_escaped, "\\.", extension_escaped, "$"), 
                                ignore.case = TRUE)
   if (length(available_files) > 0) {
     return(paste0(dir, "/", available_files[1]))
