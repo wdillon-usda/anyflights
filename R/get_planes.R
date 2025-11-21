@@ -10,6 +10,11 @@
 #' 
 #' @inheritParams get_airlines
 #' 
+#' @details 
+#' The \code{year} parameter is accepted for backward compatibility but is 
+#' not used in data retrieval, as the FAA now provides a single consolidated 
+#' aircraft registry database rather than separate yearly databases.
+#' 
 #' @return A data frame with ~3500 rows and 9 variables:
 #' \describe{
 #' \item{tailnum}{Tail number}

@@ -507,6 +507,9 @@ get_planes_data <- function(
   
   # filter the planes data by the flights data, if relevant
   planes <- join_planes_to_flights_data(planes, flights_data)
+  
+  # return the planes data
+  planes
 }
 
 
