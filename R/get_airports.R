@@ -64,7 +64,7 @@ get_airports <- function(dir = NULL) {
     
   # tidy up the data a bit
   airports <- airports_raw %>%
-    dplyr::filter(country == "United States", faa != "") %>%
+    dplyr::filter(country %in% c("United States", "Puerto Rico"), faa != "") %>%
     dplyr::select(faa, name, lat, lon, alt, tz, dst, tzone) %>%
     dplyr::group_by(faa) %>% 
     dplyr::slice(1) %>% 
