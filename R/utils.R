@@ -25,7 +25,8 @@ check_arguments <- function(station = NULL, year = NULL,
   }
   
   # checking the "year" argument
-  if (context %in% c("flights", "planes", "weather")) {
+  #if (context %in% c("flights", "planes", "weather"))
+  if (context %in% c("flights", "weather")) {
     if (!is.numeric(year)) {
       stop_glue("The provided `year` argument has class {class(year)}, but ",
                 "it needs to be a numeric. Have you put the year in quotes?")
@@ -462,7 +463,9 @@ get_weather_for_station <- function(station, year, dir,
 
 
 # get_planes utilities ------------------------------------------------------
-get_planes_data <- function(year, dir, flights_data) {
+get_planes_data <- function(
+  #year, 
+  dir, flights_data) {
   
   # put together the url to query the planes data at
   planes_src <- paste0(
