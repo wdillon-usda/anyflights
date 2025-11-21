@@ -25,32 +25,37 @@ check_arguments <- function(station = NULL, year = NULL,
   }
   
   # checking the "year" argument
-  #if (context %in% c("flights", "planes", "weather"))
-  if (context %in% c("flights", "weather")) {
-    if (!is.numeric(year)) {
-      stop_glue("The provided `year` argument has class {class(year)}, but ",
-                "it needs to be a numeric. Have you put the year in quotes?")
-    }
-    if (year > as.numeric(substr(Sys.Date(), 1, 4))) {
-      stop_glue("The provided `year` is in the future. Oops. :-)")
-    }
-  
-    if (year == as.numeric(substr(Sys.Date(), 1, 4))) {
-      stop_glue("The data for this year isn't quite available yet. The data ",
-                "for the previous year usually is released in February ",
-                "or March!")
+  if (context %in% c("flights", "planes", "weather")) {
+    # For planes context, year is optional (used for backward compatibility)
+    if (!is.null(year)) {
+      if (!is.numeric(year)) {
+        stop_glue("The provided `year` argument has class {class(year)}, but ",
+                  "it needs to be a numeric. Have you put the year in quotes?")
+      }
+      if (year > as.numeric(substr(Sys.Date(), 1, 4))) {
+        stop_glue("The provided `year` is in the future. Oops. :-)")
       }
     
-    if (year < 1987) {
-      stop_glue("Your `year` argument {year} is really far back in time! ",
-                "`anyflights` data sources do not provide data this old.")
-    }
-    if (year < 2013 & context == "planes") {
-      warning_glue("Planes data was not formatted consistently before 2013. ",
-                   "Please use caution.")
-    } else if (context != "planes" & year < 2010) {
-      message_glue("Queries before 2010 are untested by the package. ",
-                   "Please use caution!")
+      if (year == as.numeric(substr(Sys.Date(), 1, 4))) {
+        stop_glue("The data for this year isn't quite available yet. The data ",
+                  "for the previous year usually is released in February ",
+                  "or March!")
+        }
+      
+      if (year < 1987) {
+        stop_glue("Your `year` argument {year} is really far back in time! ",
+                  "`anyflights` data sources do not provide data this old.")
+      }
+      if (year < 2013 & context == "planes") {
+        warning_glue("Planes data was not formatted consistently before 2013. ",
+                     "Please use caution.")
+      } else if (context != "planes" & year < 2010) {
+        message_glue("Queries before 2010 are untested by the package. ",
+                     "Please use caution!")
+      }
+    } else if (context %in% c("flights", "weather")) {
+      # year is required for flights and weather
+      stop_glue("The `year` argument is required for {context} context.")
     }
   }
   
@@ -464,13 +469,14 @@ get_weather_for_station <- function(station, year, dir,
 
 # get_planes utilities ------------------------------------------------------
 get_planes_data <- function(
-  #year, 
+  year = NULL, 
   dir, flights_data) {
   
   # put together the url to query the planes data at
+  # Note: year parameter is accepted for backward compatibility but not used
+  # as FAA now provides a single consolidated dataset instead of yearly files
   planes_src <- paste0(
     "https://registry.faa.gov/database/ReleasableAircraft", 
-    #year, 
     ".zip"
   )
   

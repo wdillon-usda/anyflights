@@ -45,11 +45,11 @@
 #'
 #' @export
 get_planes <- function(
-  #year, 
+  year = NULL, 
   dir = NULL, flights_data = NULL) {
 
   # check user inputs
-  check_arguments(#year = year,
+  check_arguments(year = year,
                   dir = dir,
                   context = "planes")
   flights_data <- parse_flights_data_arg(flights_data)
@@ -63,8 +63,10 @@ get_planes <- function(
   }
   
   # grab the planes data for the relevant year
+  # Note: year parameter is accepted for backward compatibility but not used
+  # in URL construction as FAA now provides a single consolidated dataset
   planes <- get_planes_data(
-    #year, 
+    year, 
     dir, flights_data)
   
   # save the data if a directory was supplied
