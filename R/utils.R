@@ -514,9 +514,25 @@ get_planes_data <- function(
 
 
 process_planes_master <- function(planes_lcl) {
+  # Check if the MASTER file exists (try both cases)
+  master_file <- paste0(planes_lcl, "/MASTER.txt")
+  if (!file.exists(master_file)) {
+    master_file <- paste0(planes_lcl, "/Master.txt")
+    if (!file.exists(master_file)) {
+      # List available files to help debug
+      available_files <- list.files(planes_lcl, pattern = "master", ignore.case = TRUE)
+      if (length(available_files) > 0) {
+        master_file <- paste0(planes_lcl, "/", available_files[1])
+      } else {
+        stop_glue("Could not find MASTER file in {planes_lcl}. ",
+                  "Available files: {paste(list.files(planes_lcl), collapse = ', ')}")
+      }
+    }
+  }
+  
   suppressMessages(suppressWarnings(
     # read in the data, but fast
-    planes_master <- vroom::vroom(paste0(planes_lcl, "/MASTER.txt"),
+    planes_master <- vroom::vroom(master_file,
                                   progress = FALSE) %>%
       # the column names change every year, but the positions have stayed the
       # same -- select by position :-(
@@ -553,11 +569,25 @@ process_planes_ref <- function(planes_lcl) {
   # ...and unzip it!
   # utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
   
+  # Check if the ACFTREF file exists (try both cases)
+  acftref_file <- paste0(planes_lcl, "/ACFTREF.txt")
+  if (!file.exists(acftref_file)) {
+    acftref_file <- paste0(planes_lcl, "/Acftref.txt")
+    if (!file.exists(acftref_file)) {
+      # List available files to help debug
+      available_files <- list.files(planes_lcl, pattern = "acftref", ignore.case = TRUE)
+      if (length(available_files) > 0) {
+        acftref_file <- paste0(planes_lcl, "/", available_files[1])
+      } else {
+        stop_glue("Could not find ACFTREF file in {planes_lcl}. ",
+                  "Available files: {paste(list.files(planes_lcl), collapse = ', ')}")
+      }
+    }
+  }
+  
   # read in the data, but fast
   suppressMessages(suppressWarnings(
-    planes_ref <- vroom::vroom(paste0(planes_lcl, 
-                                      "/", 
-                                      "ACFTREF.txt"),
+    planes_ref <- vroom::vroom(acftref_file,
                                col_names = planes_ref_col_names,
                                col_types = planes_ref_col_types,
                                progress = FALSE,
@@ -578,14 +608,26 @@ join_planes_data <- function(planes_master, planes_ref) {
     planes_master %>%
       dplyr::inner_join(planes_ref, by = "code") %>%
       dplyr::select(-code) %>%
-      dplyr::mutate(speed = dplyr::if_else(speed == 0, NA_character_, speed),
-                    no_eng = dplyr::if_else(no_eng == 0, NA_integer_, no_eng),
-                    no_seats = dplyr::if_else(no_seats == 0, NA_integer_, no_seats),
-                    engine = engine_types[type_eng + 1],
-                    type = acft_types[type_acft],
-                    tailnum = paste0("N", nnum),
-                    year = as.integer(year),
-                    speed = as.integer(speed)) %>%
+      dplyr::mutate(
+        speed = dplyr::if_else(speed == 0, NA_character_, speed),
+        no_eng = dplyr::if_else(no_eng == 0, NA_integer_, no_eng),
+        no_seats = dplyr::if_else(no_seats == 0, NA_integer_, no_seats),
+        # Handle out-of-bounds or NA values for engine types
+        engine = dplyr::case_when(
+          is.na(type_eng) ~ NA_character_,
+          type_eng < 0 | type_eng >= length(engine_types) ~ "Unknown",
+          TRUE ~ engine_types[type_eng + 1]
+        ),
+        # Handle out-of-bounds or NA values for aircraft types
+        type = dplyr::case_when(
+          is.na(type_acft) ~ NA_character_,
+          type_acft < 1 | type_acft > length(acft_types) ~ NA_character_,
+          TRUE ~ acft_types[type_acft]
+        ),
+        tailnum = paste0("N", nnum),
+        year = as.integer(year),
+        speed = as.integer(speed)
+      ) %>%
       dplyr::rename(manufacturer = mfr,
                     engines = no_eng, 
                     seats = no_seats) %>%
