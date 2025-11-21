@@ -467,6 +467,35 @@ get_weather_for_station <- function(station, year, dir,
 }
 
 
+# Helper function to find files case-insensitively
+find_file_case_insensitive <- function(dir, filename) {
+  # Try exact match first
+  exact_path <- paste0(dir, "/", filename)
+  if (file.exists(exact_path)) {
+    return(exact_path)
+  }
+  
+  # Try with different case
+  title_case_path <- paste0(dir, "/", 
+                           toupper(substring(filename, 1, 1)), 
+                           tolower(substring(filename, 2)))
+  if (file.exists(title_case_path)) {
+    return(title_case_path)
+  }
+  
+  # Try finding with case-insensitive pattern
+  pattern <- gsub("\\.txt$", "", filename, ignore.case = TRUE)
+  available_files <- list.files(dir, pattern = pattern, ignore.case = TRUE)
+  if (length(available_files) > 0) {
+    return(paste0(dir, "/", available_files[1]))
+  }
+  
+  # File not found - return error message
+  stop_glue("Could not find {filename} in {dir}. ",
+            "Available files: {paste(list.files(dir), collapse = ', ')}")
+}
+
+
 # get_planes utilities ------------------------------------------------------
 get_planes_data <- function(
   year = NULL, 
@@ -514,21 +543,8 @@ get_planes_data <- function(
 
 
 process_planes_master <- function(planes_lcl) {
-  # Check if the MASTER file exists (try both cases)
-  master_file <- paste0(planes_lcl, "/MASTER.txt")
-  if (!file.exists(master_file)) {
-    master_file <- paste0(planes_lcl, "/Master.txt")
-    if (!file.exists(master_file)) {
-      # List available files to help debug
-      available_files <- list.files(planes_lcl, pattern = "master", ignore.case = TRUE)
-      if (length(available_files) > 0) {
-        master_file <- paste0(planes_lcl, "/", available_files[1])
-      } else {
-        stop_glue("Could not find MASTER file in {planes_lcl}. ",
-                  "Available files: {paste(list.files(planes_lcl), collapse = ', ')}")
-      }
-    }
-  }
+  # Find the MASTER file (case-insensitive)
+  master_file <- find_file_case_insensitive(planes_lcl, "MASTER.txt")
   
   suppressMessages(suppressWarnings(
     # read in the data, but fast
@@ -569,21 +585,8 @@ process_planes_ref <- function(planes_lcl) {
   # ...and unzip it!
   # utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
   
-  # Check if the ACFTREF file exists (try both cases)
-  acftref_file <- paste0(planes_lcl, "/ACFTREF.txt")
-  if (!file.exists(acftref_file)) {
-    acftref_file <- paste0(planes_lcl, "/Acftref.txt")
-    if (!file.exists(acftref_file)) {
-      # List available files to help debug
-      available_files <- list.files(planes_lcl, pattern = "acftref", ignore.case = TRUE)
-      if (length(available_files) > 0) {
-        acftref_file <- paste0(planes_lcl, "/", available_files[1])
-      } else {
-        stop_glue("Could not find ACFTREF file in {planes_lcl}. ",
-                  "Available files: {paste(list.files(planes_lcl), collapse = ', ')}")
-      }
-    }
-  }
+  # Find the ACFTREF file (case-insensitive)
+  acftref_file <- find_file_case_insensitive(planes_lcl, "ACFTREF.txt")
   
   # read in the data, but fast
   suppressMessages(suppressWarnings(
@@ -615,7 +618,7 @@ join_planes_data <- function(planes_master, planes_ref) {
         # Handle out-of-bounds or NA values for engine types
         engine = dplyr::case_when(
           is.na(type_eng) ~ NA_character_,
-          type_eng < 0 | type_eng >= length(engine_types) ~ "Unknown",
+          type_eng < 0 | type_eng >= length(engine_types) ~ NA_character_,
           TRUE ~ engine_types[type_eng + 1]
         ),
         # Handle out-of-bounds or NA values for aircraft types
