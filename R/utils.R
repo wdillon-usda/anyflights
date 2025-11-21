@@ -515,7 +515,7 @@ process_planes_master <- function(planes_lcl) {
   ))
   
   # delete the temporary folder
-  unlink(x = planes_lcl, recursive = TRUE)
+  # unlink(x = planes_lcl, recursive = TRUE)
   
   planes_master
 }
@@ -542,7 +542,7 @@ process_planes_ref <- function(planes_lcl) {
   #  )
   
   # ...and unzip it!
-  utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
+  # utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
   
   # read in the data, but fast
   suppressMessages(suppressWarnings(
