@@ -475,17 +475,26 @@ find_file_case_insensitive <- function(dir, filename) {
     return(exact_path)
   }
   
-  # Try with different case
-  title_case_path <- paste0(dir, "/", 
-                           toupper(substring(filename, 1, 1)), 
-                           tolower(substring(filename, 2)))
-  if (file.exists(title_case_path)) {
-    return(title_case_path)
+  # Try with all lowercase
+  lower_path <- paste0(dir, "/", tolower(filename))
+  if (file.exists(lower_path)) {
+    return(lower_path)
   }
   
-  # Try finding with case-insensitive pattern
-  pattern <- gsub("\\.txt$", "", filename, ignore.case = TRUE)
-  available_files <- list.files(dir, pattern = pattern, ignore.case = TRUE)
+  # Try with all uppercase base name
+  upper_path <- paste0(dir, "/", toupper(filename))
+  if (file.exists(upper_path)) {
+    return(upper_path)
+  }
+  
+  # Try finding with case-insensitive pattern matching
+  # Extract just the base name without extension
+  base_name <- tools::file_path_sans_ext(filename)
+  extension <- tools::file_ext(filename)
+  
+  # Create a pattern that matches the filename exactly but case-insensitively
+  available_files <- list.files(dir, pattern = paste0("^", base_name, "\\.", extension, "$"), 
+                               ignore.case = TRUE)
   if (length(available_files) > 0) {
     return(paste0(dir, "/", available_files[1]))
   }
@@ -616,12 +625,14 @@ join_planes_data <- function(planes_master, planes_ref) {
         no_eng = dplyr::if_else(no_eng == 0, NA_integer_, no_eng),
         no_seats = dplyr::if_else(no_seats == 0, NA_integer_, no_seats),
         # Handle out-of-bounds or NA values for engine types
+        # Note: engine_types uses 0-based indexing, so we access with [type_eng + 1]
         engine = dplyr::case_when(
           is.na(type_eng) ~ NA_character_,
           type_eng < 0 | type_eng >= length(engine_types) ~ NA_character_,
           TRUE ~ engine_types[type_eng + 1]
         ),
         # Handle out-of-bounds or NA values for aircraft types
+        # Note: acft_types uses 1-based indexing, so we access with [type_acft]
         type = dplyr::case_when(
           is.na(type_acft) ~ NA_character_,
           type_acft < 1 | type_acft > length(acft_types) ~ NA_character_,
