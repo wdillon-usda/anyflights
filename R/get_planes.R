@@ -44,10 +44,12 @@
 #' to a data-only package.
 #'
 #' @export
-get_planes <- function(year, dir = NULL, flights_data = NULL) {
+get_planes <- function(
+  #year, 
+  dir = NULL, flights_data = NULL) {
 
   # check user inputs
-  check_arguments(year = year,
+  check_arguments(#year = year,
                   dir = dir,
                   context = "planes")
   flights_data <- parse_flights_data_arg(flights_data)
@@ -61,7 +63,9 @@ get_planes <- function(year, dir = NULL, flights_data = NULL) {
   }
   
   # grab the planes data for the relevant year
-  planes <- get_planes_data(year, dir, flights_data)
+  planes <- get_planes_data(
+    #year, 
+    dir, flights_data)
   
   # save the data if a directory was supplied
   if (!dir_is_null) {
