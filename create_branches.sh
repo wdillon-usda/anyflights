@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to create all 8 PR branches locally
+# Script to create all 9 branches (1 baseline + 8 PR branches) locally
 # Run this script from the root of your anyflights repository
 
 set -e  # Exit on error
