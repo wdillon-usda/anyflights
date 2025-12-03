@@ -129,7 +129,7 @@ Meets the maintainer's request for ~10 line changes that address specific issues
 | PR-H | +5 | 0 | 5 | Documentation |
 | **Total** | **+113** | **-41** | **154** | |
 
-*(Note: Total is slightly higher than original PR #1 due to restructured code formatting in PR-D)*
+*(Note: Total is slightly different from original PR #1 due to restructured code formatting in PR-D, where validation logic was wrapped in conditional blocks. The functionality is identical, but the code is more clearly structured with proper indentation.)*
 
 ## How to Use These Branches
 
