@@ -2,9 +2,16 @@
 
 This directory contains a complete demonstration of how to break down the large PR #1 into small, reviewable changes as requested by the upstream maintainer.
 
-## 🎉 Branches Are Now Created!
+## ⚠️ Important Note About Branches
 
-All 8 small PR branches plus the baseline branch have been created locally and are ready to be pushed to GitHub. See **[BRANCHES_CREATED.md](BRANCHES_CREATED.md)** for details on how to use them.
+The branch creation process was demonstrated in a sandboxed environment. **The branches do not automatically exist in your local repository or on GitHub.** 
+
+To use the branches:
+- **Option 1**: Follow **[HOW_TO_RECREATE_BRANCHES.md](HOW_TO_RECREATE_BRANCHES.md)** to recreate them locally
+- **Option 2**: Use the documentation (PR_DIFFS.md) without creating branches
+- **Option 3**: Create branches only when you're ready to submit to upstream
+
+**The key value is in the documentation showing HOW to break down changes, not the branches themselves.**
 
 ## Problem Statement
 

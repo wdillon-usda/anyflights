@@ -1,4 +1,23 @@
-# Quick Start Guide: Using the PR Branches
+# Quick Start Guide: Using the PR Breakdown
+
+## ⚠️ Important: About the Branches
+
+The branches described in this guide were created in a sandboxed demonstration environment. **They do not automatically exist in your local repository.**
+
+### How to Proceed
+
+**Option 1: Recreate Branches Locally** (if you want to use branches)
+- Follow **[HOW_TO_RECREATE_BRANCHES.md](HOW_TO_RECREATE_BRANCHES.md)** for step-by-step instructions
+- This is optional - branches are mainly for demonstration
+
+**Option 2: Use Documentation Only** (recommended)
+- Use **[PR_DIFFS.md](PR_DIFFS.md)** to see all code changes
+- Create branches only when ready to submit to upstream
+- Follow **[SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md)** when submitting
+
+**Option 3: Don't Create Branches**
+- The documentation shows HOW to break down changes
+- That's the key value - the approach, not the branches themselves
 
 ## What Has Been Created
 
