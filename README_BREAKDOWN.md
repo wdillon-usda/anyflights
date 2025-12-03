@@ -2,6 +2,10 @@
 
 This directory contains a complete demonstration of how to break down the large PR #1 into small, reviewable changes as requested by the upstream maintainer.
 
+## 🎉 Branches Are Now Created!
+
+All 8 small PR branches plus the baseline branch have been created locally and are ready to be pushed to GitHub. See **[BRANCHES_CREATED.md](BRANCHES_CREATED.md)** for details on how to use them.
+
 ## Problem Statement
 
 The original maintainer (Simon Couch) requested:
