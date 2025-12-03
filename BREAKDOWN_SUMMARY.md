@@ -4,7 +4,7 @@
 This document demonstrates how PR #1 (https://github.com/wdillon-usda/anyflights/pull/1), which contained 117 additions and 41 deletions across 2 files, has been broken down into 8 small, focused, reviewable pull requests as requested by the original package maintainer.
 
 ## Original Problem
-The original PR #1 was intended for submission to the upstream repository (simonpcouch/anyflights) as PR #29, but the maintainer requested:
+PR #1 in this fork was created to fix issues with get_planes() before submitting changes to the upstream repository (simonpcouch/anyflights). However, when similar changes were submitted as PR #29 to the upstream, the maintainer requested:
 > "There's a lot of material here, both in the PR description and in the diff. If you're able, please break this PR into smaller pieces (think +10 −10) that address only the specific issues you're seeing and refrain from introducing unrelated changes."
 
 ## Breakdown Strategy

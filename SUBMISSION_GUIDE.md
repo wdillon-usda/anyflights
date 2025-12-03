@@ -88,7 +88,7 @@ Add an explicit return statement for the planes data.
 - No breaking changes to existing functionality
 
 ## Related
-This is part of breaking down the larger PR #29 into smaller, focused changes as requested.
+This is part of breaking down the larger changes into smaller, focused pieces as requested.
 ```
 
 #### PR-B Submission  
@@ -112,7 +112,7 @@ Remove the commented year parameter from URL construction.
 - Function successfully downloads current FAA data
 
 ## Related
-This is part of breaking down the larger PR #29 into smaller, focused changes as requested.
+This is part of breaking down larger changes into smaller, focused pieces as requested.
 ```
 
 #### PR-C Submission
@@ -142,7 +142,7 @@ Restore the year parameter with a NULL default value to maintain backward compat
 - Backward compatible with existing code
 
 ## Related
-This is part of breaking down the larger PR #29 into smaller, focused changes as requested.
+This is part of breaking down larger changes into smaller, focused pieces as requested.
 ```
 
 *Continue similar pattern for PR-D through PR-H using commit messages and PR_DIFFS.md*
