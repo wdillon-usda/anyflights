@@ -44,7 +44,7 @@
 #' to a data-only package.
 #'
 #' @export
-get_planes <- function(year, dir = NULL, flights_data = NULL) {
+get_planes <- function(year = NULL, dir = NULL, flights_data = NULL) {
 
   # check user inputs
   check_arguments(year = year,
