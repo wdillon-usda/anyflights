@@ -462,13 +462,15 @@ get_weather_for_station <- function(station, year, dir,
 
 
 # get_planes utilities ------------------------------------------------------
-get_planes_data <- function(year, dir, flights_data) {
-  
+get_planes_data <- function(
+  year = NULL, 
+  dir, flights_data) {
+
   # put together the url to query the planes data at
+  # Note: year parameter is accepted for backward compatibility but not used
+  # as FAA now provides a single consolidated dataset instead of yearly files
   planes_src <- paste0(
-    "https://registry.faa.gov/database/yearly/ReleasableAircraft.", 
-    year, 
-    ".zip"
+    "https://registry.faa.gov/database/ReleasableAircraft.zip"
   )
   
   # and a folder to save the planes data to
@@ -498,6 +500,9 @@ get_planes_data <- function(year, dir, flights_data) {
   
   # filter the planes data by the flights data, if relevant
   planes <- join_planes_to_flights_data(planes, flights_data)
+  
+  # return planes data
+  planes
 }
 
 
@@ -512,7 +517,7 @@ process_planes_master <- function(planes_lcl) {
   ))
   
   # delete the temporary folder
-  unlink(x = planes_lcl, recursive = TRUE)
+  # unlink(x = planes_lcl, recursive = TRUE) # commented out so it can be used in process_planes_ref
   
   planes_master
 }
@@ -525,21 +530,22 @@ process_planes_ref <- function(planes_lcl) {
   # is so unstable, just query the 2019 acftref data for now and join
   # to the given year's master.txt data to get the accurate data
   # for tailnums licensed in that year
-  
-  if (!dir.exists(planes_lcl)) {dir.create(planes_lcl)}
+
+  ## Commented out lines because persists from process_planes_master
+  # if (!dir.exists(planes_lcl)) {dir.create(planes_lcl)}
   
   # download the planes acftref data 
-  planes_tmp <- tempfile(fileext = ".zip")
+  #planes_tmp <- tempfile(fileext = ".zip")
   
-  planes_response <- 
-    httr::GET(
-      "https://registry.faa.gov/database/yearly/ReleasableAircraft.2019.zip", 
-      httr::user_agent("anyflights"), 
-      httr::write_disk(planes_tmp, overwrite = TRUE)
-    )
+  #planes_response <- 
+  #  httr::GET(
+  #    "https://registry.faa.gov/database/yearly/ReleasableAircraft.2019.zip", 
+  #    httr::user_agent("anyflights"), 
+  #    httr::write_disk(planes_tmp, overwrite = TRUE)
+  #  )
   
   # ...and unzip it!
-  utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
+  # utils::unzip(planes_tmp, exdir = planes_lcl, junkpaths = TRUE)
   
   # read in the data, but fast
   suppressMessages(suppressWarnings(
