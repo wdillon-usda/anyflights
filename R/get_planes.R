@@ -9,6 +9,8 @@
 #' @inheritParams anyflights 
 #' 
 #' @inheritParams get_airlines
+#'
+#' @param year The argument will be ignored and is present only for backward-compatibility
 #' 
 #' @return A data frame with ~3500 rows and 9 variables:
 #' \describe{
